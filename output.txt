@@ -1,0 +1,51 @@
+Hi I'm process 4083 with return arg 2 and my parent is 4082.
+Hi I'm process 4084 with return arg 3 and my parent is 4082.
+Hi I'm process 4085 with return arg 4 and my parent is 4082.
+Hi I'm process 4087 with return arg 8 and my parent is 4084.
+Hi I'm process 4088 with return arg 11 and my parent is 4085.
+Hi I'm process 4089 with return arg 6 and my parent is 4083.
+Hi I'm process 4091 with return arg 12 and my parent is 4085.
+Hi I'm process 4086 with return arg 5 and my parent is 4083.
+Hi I'm process 4092 with return arg 10 and my parent is 4084.
+Hi I'm process 4090 with return arg 9 and my parent is 4084.
+Hi I'm process 4094 with return arg 13 and my parent is 4085.
+Hi I'm process 4093 with return arg 7 and my parent is 4083.
+Hi I'm process 4095 with return arg 17 and my parent is 4089.
+Hi I'm process 4097 with return arg 18 and my parent is 4089.
+Hi I'm process 4096 with return arg 14 and my parent is 4086.
+Hi I'm process 4098 with return arg 15 and my parent is 4086.
+Hi I'm process 4099 with return arg 19 and my parent is 4089.
+Hi I'm process 4100 with return arg 16 and my parent is 4086.
+Hi I'm process 4101 with return arg 20 and my parent is 4093.
+Max: 2497, Avg: 2175
+
+Hi I am Process 4096 with return argument 14 and I found the hidden key at position A[1].
+Hi I am Process 4098 with return argument 15 and I found the hidden key at position A[3].
+Hi I am Process 4098 with return argument 15 and I found the hidden key at position A[3].
+Hi I am Process 4100 with return argument 16 and I found the hidden key at position A[8].
+Hi I am Process 4100 with return argument 16 and I found the hidden key at position A[8].
+Hi I am Process 4095 with return argument 17 and I found the hidden key at position A[12].
+Hi I am Process 4095 with return argument 17 and I found the hidden key at position A[13].
+Hi I am Process 4095 with return argument 17 and I found the hidden key at position A[12].
+Hi I am Process 4095 with return argument 17 and I found the hidden key at position A[13].
+Hi I am Process 4097 with return argument 18 and I found the hidden key at position A[14].
+Hi I am Process 4097 with return argument 18 and I found the hidden key at position A[15].
+Hi I am Process 4097 with return argument 18 and I found the hidden key at position A[14].
+Hi I am Process 4097 with return argument 18 and I found the hidden key at position A[15].
+Hi I am Process 4097 with return argument 18 and I found the hidden key at position A[16].
+Hi I am Process 4099 with return argument 19 and I found the hidden key at position A[18].
+Hi I am Process 4099 with return argument 19 and I found the hidden key at position A[19].
+Hi I am Process 4099 with return argument 19 and I found the hidden key at position A[18].
+Hi I am Process 4099 with return argument 19 and I found the hidden key at position A[19].
+Hi I am Process 4093 with return argument 20 and I found the hidden key at position A[26].
+Hi I am Process 4093 with return argument 20 and I found the hidden key at position A[28].
+Hi I am Process 4093 with return argument 20 and I found the hidden key at position A[26].
+Hi I am Process 4093 with return argument 20 and I found the hidden key at position A[28].
+Hi I am Process 4093 with return argument 20 and I found the hidden key at position A[30].
+Hi I am Process 4093 with return argument 20 and I found the hidden key at position A[31].
+Hi I am Process 4093 with return argument 20 and I found the hidden key at position A[32].
+Hi I am Process 4087 with return argument 8 and I found the hidden key at position A[33].
+Hi I am Process 4087 with return argument 8 and I found the hidden key at position A[34].
+Hi I am Process 4087 with return argument 8 and I found the hidden key at position A[33].
+Hi I am Process 4087 with return argument 8 and I found the hidden key at position A[34].
+Hi I am Process 4087 with return argument 8 and I found the hidden key at position A[36].
