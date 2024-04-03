@@ -8,29 +8,32 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
+
 int L, H, PN;
 
 void generateTextFile() {
-   int* loc = malloc((L + 60) * sizeof(int));
-  for (int i = 0; i < L + 60; i++) loc[i] = 0;
+    int* loc = malloc((L + 60) * sizeof(int));
+    for (int i = 0; i < L + 60; i++) loc[i] = 0;
 
-  int count = 0;
-  srand(time(NULL));
-  while (count < 60) {
-    int randomNumber = rand() % (L + 60);
-    if (loc[randomNumber] == 0) {
-      loc[randomNumber] = -(rand() % 60 + 1);
-      count++;
+    int count = 0;
+    srand(time(NULL));
+
+    while (count < 60) {
+        int randomNumber = rand() % (L + 60);
+        if (loc[randomNumber] == 0) {
+            loc[randomNumber] = -(rand() % 60 + 1); // Values between -1 and -60
+            count++;
+        }
     }
-  }
 
-  FILE* keys = fopen("keys.txt", "w");
-  for (int i = 0; i < L + 60; i++) {
-    fprintf(keys, "%d\n", loc[i]);
-  }
+    FILE* keys = fopen("keys.txt", "w");
+    for (int i = 0; i < L + 60; i++) {
+        if (loc[i] < 0) fprintf(keys, "%d\n", loc[i]);
+        else fprintf(keys, "%d\n", rand() % 10000);
+    }
 
-  fclose(keys);
-  free(loc);
+    fclose(keys);
+    free(loc);
 }
 
 int main(int argc, char* argv[]) {
@@ -44,6 +47,10 @@ int main(int argc, char* argv[]) {
   L = atoi(argv[1]);
   H = atoi(argv[2]);
   PN = atoi(argv[3]);
+  if (H < 30 || H > 60) {
+        printf("H must be between 30 and 60.\n");
+        return -1;
+    }
   int maxChildren;
   int parentRoot = getpid();
   char* input = malloc(60);
@@ -53,7 +60,7 @@ int main(int argc, char* argv[]) {
   printf("How Many Children (2, 3, 4)?\n");
   scanf("%d", &maxChildren);  // getting input from user
 
-  // if the input is invalid
+  // if the input is not valid
   if (maxChildren == 0 || (maxChildren < 2) || maxChildren >= 5)  {
     printf("Invalid input entered\n\n");
     return -1;
@@ -74,6 +81,7 @@ int main(int argc, char* argv[]) {
   int result = floor(log2(PN));
   int returnArg = 1;
 
+
   pid_t childMaker;
 
   int childCounter = -1;
@@ -81,7 +89,7 @@ int main(int argc, char* argv[]) {
   int pid;
   int start = 0;
   int end = L + 60;
-  // Starting the the BFS tree
+  // Starting the BFS tree
   int childTrack[4] = {-1, -1, -1, -1};
   int parentPipe = -1;
   int oldEnd;
@@ -125,7 +133,7 @@ int main(int argc, char* argv[]) {
     if (pid == -1) {
       perror("fork");
     } else if (pid == 0) {
-      // CHILD PROCESS
+      // child process
       for (int l = 0; l < maxChildren; l++) {
         if (childTrack[l] != -1) {
           parentPipe = childTrack[l];
@@ -148,7 +156,7 @@ int main(int argc, char* argv[]) {
           if (array[j] > max) max = array[j];
           avg += array[j];
 
-          if (array[j] == -1) {
+          if (array[j] >= -60 && array[j] <= -1) {
             h[hstart] = getpid();
             h[hstart + 1] = j;
             h[hstart + 2] = returnCode;
@@ -169,8 +177,7 @@ int main(int argc, char* argv[]) {
         exit(0);
       }
     } else {  
-      // parent process
-  
+      // parent process 
       bool hasChildren = false;
       int childCount = 0;
       int max = 0;
@@ -198,12 +205,12 @@ int main(int argc, char* argv[]) {
         end = oldEnd;
       }
 
-      // If process with no children somehow gets to this point
+      // If process with no children somehow ends up here
       if (childCount == 0) {
         for (int j = start; j < end; j++) {
           if (array[j] > max) max = array[j];
           avg += array[j];
-          if (array[j] == -1) {
+          if (array[j] >= -60 && array[j] <= -1) {
             h[hstart] = getpid();
             h[hstart + 1] = j;
             h[hstart + 2] = returnCode;
@@ -213,11 +220,11 @@ int main(int argc, char* argv[]) {
         avg = avg / (end - start);
         count = end - start;
       } else if (childCount < maxChildren) {
-        // If a process with not the max children somehow gets to this point
+        // If a process with not the max children somehow ends up here
         for (int j = start; j < end; j++) {
           if (array[j] > max) max = array[j];
           avg += array[j];
-          if (array[j] == -1) {
+          if (array[j] >= -60 && array[j] <= -1) {
             h[hstart] = getpid();
             h[hstart + 1] = j;
             h[hstart + 2] = returnCode;
@@ -238,6 +245,10 @@ int main(int argc, char* argv[]) {
           if (tempMax >= max) {
             max = tempMax;
           }
+         int keysToAdd = (tempHstart / 3 < 2) ? tempHstart / 3 : 2;  // Assuming each hidden key has 3 related integers
+        for (int i = 0; i < keysToAdd * 3; i++) {
+            h[hstart++] = tempH[i];
+        }
           avg = (avg * count + tempAvg * tempCount) / (tempCount + count);
           count += tempCount;
 
@@ -258,6 +269,10 @@ int main(int argc, char* argv[]) {
             if (tempMax >= max) {
               max = tempMax;
             }
+            int keysToAdd = (tempHstart / 3 < 2) ? tempHstart / 3 : 2;  // Assuming each hidden key has 3 related integers
+        for (int i = 0; i < keysToAdd * 3; i++) {
+            h[hstart++] = tempH[i];
+        }
             avg = (avg * count + tempAvg * tempCount) / (tempCount + count);
             for (int i = 0; i < tempHstart; i++) {
               h[hstart] = tempH[i];
