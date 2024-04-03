@@ -148,7 +148,7 @@ int main(int argc, char* argv[]) {
           if (array[j] > max) max = array[j];
           avg += array[j];
 
-          if (array[j] == -1) {
+          if (array[j] >= -60 && array[j] <= -1) {
             h[hstart] = getpid();
             h[hstart + 1] = j;
             h[hstart + 2] = returnCode;
@@ -203,7 +203,7 @@ int main(int argc, char* argv[]) {
         for (int j = start; j < end; j++) {
           if (array[j] > max) max = array[j];
           avg += array[j];
-          if (array[j] == -1) {
+          if (array[j] >= -60 && array[j] <= -1) {
             h[hstart] = getpid();
             h[hstart + 1] = j;
             h[hstart + 2] = returnCode;
@@ -217,7 +217,7 @@ int main(int argc, char* argv[]) {
         for (int j = start; j < end; j++) {
           if (array[j] > max) max = array[j];
           avg += array[j];
-          if (array[j] == -1) {
+          if (array[j] >= -60 && array[j] <= -1) {
             h[hstart] = getpid();
             h[hstart + 1] = j;
             h[hstart + 2] = returnCode;
