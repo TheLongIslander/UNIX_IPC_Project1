@@ -58,9 +58,9 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < 256; i++) h[i] = -1;
   int hstart = 0;
   printf("How Many Children (2, 3, 4)?\n");
-  scanf("%d", &maxChildren);  // get input from user
+  scanf("%d", &maxChildren);  // getting input from user
 
-  // if the input is not a number......
+  // if the input is not valid
   if (maxChildren == 0 || (maxChildren < 2) || maxChildren >= 5)  {
     printf("Invalid input entered\n\n");
     return -1;
@@ -81,9 +81,6 @@ int main(int argc, char* argv[]) {
   int result = floor(log2(PN));
   int returnArg = 1;
 
-  // Makes N number of childs for Parent without Children making Processes.
-
-  // Idea: Try utilizing the level of the tree to make the processes!
 
   pid_t childMaker;
 
@@ -92,7 +89,7 @@ int main(int argc, char* argv[]) {
   int pid;
   int start = 0;
   int end = L + 60;
-  // START THE BFS TREE
+  // Starting the BFS tree
   int childTrack[4] = {-1, -1, -1, -1};
   int parentPipe = -1;
   int oldEnd;
@@ -136,7 +133,7 @@ int main(int argc, char* argv[]) {
     if (pid == -1) {
       perror("fork");
     } else if (pid == 0) {
-      // CHILD PROCESS
+      // child process
       for (int l = 0; l < maxChildren; l++) {
         if (childTrack[l] != -1) {
           parentPipe = childTrack[l];
@@ -180,8 +177,7 @@ int main(int argc, char* argv[]) {
         exit(0);
       }
     } else {  
-      // parent process (NO FORKING IN HERE TO KEEP CHAIN FORMAT!) Some
-      // ends need to be closed.
+      // parent process 
       bool hasChildren = false;
       int childCount = 0;
       int max = 0;
@@ -209,7 +205,7 @@ int main(int argc, char* argv[]) {
         end = oldEnd;
       }
 
-      // If process with no children end up here
+      // If process with no children somehow ends up here
       if (childCount == 0) {
         for (int j = start; j < end; j++) {
           if (array[j] > max) max = array[j];
@@ -224,7 +220,7 @@ int main(int argc, char* argv[]) {
         avg = avg / (end - start);
         count = end - start;
       } else if (childCount < maxChildren) {
-        // If a process with not the max children ends up here
+        // If a process with not the max children somehow ends up here
         for (int j = start; j < end; j++) {
           if (array[j] > max) max = array[j];
           avg += array[j];
