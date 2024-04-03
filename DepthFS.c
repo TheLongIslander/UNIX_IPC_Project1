@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
     printf("Not enough arguements");
     return -1;
   }
- 
+
 
   L = atoi(argv[1]);
   H = atoi(argv[2]);
@@ -54,6 +54,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
   // generate text file of L integers and 60 randomly placed -1's
+  // the -1's represent the keys
   generateTextFile();
 
   FILE* file = fopen("keys.txt", "r");
@@ -67,20 +68,22 @@ int main(int argc, char* argv[]) {
     array[i] = atoi(line);
   }
 
-  /
+  
   int fd[2 * (PN)];  
+                     
   int bd[2 * (PN)];  
+                     
+
   int pid;
   int start = 0;
   int end = 0;
 
-  int parentRoot = getpid();  
+  int parentRoot = getpid(); 
   int returnArg = 1;
 
-  
 
   for (int i = 0; i < PN; i++) {
-    // Initiate pipes
+    // Initiate the Pipes.
     pipe(&fd[2 * i]);
     pipe(&bd[2 * i]);
 
@@ -90,7 +93,7 @@ int main(int argc, char* argv[]) {
       perror("fork");
     }
 
-    // child process
+    // CHILD PROCESS
     else if (pid == 0) {
       output = fopen("output.txt", "a+");
       printf("Hi I'm process %d with return arg %d and my parent is %d.\n",
@@ -104,7 +107,7 @@ int main(int argc, char* argv[]) {
       end = end + (L + 60) / PN;
       if (end > (L + 60)) end = (L + 60);
 
-      
+    
       if (i == (PN - 1)) {
         close(fd[2 * i]);
         close(bd[2 * i] + 1);
@@ -112,6 +115,7 @@ int main(int argc, char* argv[]) {
         double avg = 0;
         int count = 0;
         for (int j = start; j < end; j++) {
+          // exclude negative numbers that were read in
           if (array[j] < 0) continue;
 
           if (array[j] > max) max = array[j];
@@ -155,7 +159,7 @@ int main(int argc, char* argv[]) {
       double avg = 0;
       int count = 0;
 
-    
+      
       if (parentRoot != getpid()) {
         close(fd[2 * i] + 1);
         close(fd[2 * (i - 1)]);
@@ -164,7 +168,7 @@ int main(int argc, char* argv[]) {
 
         count = 0;
         for (int j = start; j < end; j++) {
-        
+          // exclude negative numbers that were read in
           if (array[j] < 0) continue;
 
           if (array[j] > max) max = array[j];
@@ -214,8 +218,8 @@ int main(int argc, char* argv[]) {
       }
 
       
-      else {
-        
+      else 
+      {
         close(bd[2 * i]);
         close(fd[2 * i + 1]);
         read(fd[2 * i], &max, sizeof(int));
