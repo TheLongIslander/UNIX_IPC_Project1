@@ -54,7 +54,6 @@ int main(int argc, char* argv[]) {
         return -1;
     }
   // generate text file of L integers and 60 randomly placed -1's
-  // the -1's represent the keys
   generateTextFile();
 
   FILE* file = fopen("keys.txt", "r");
@@ -68,23 +67,20 @@ int main(int argc, char* argv[]) {
     array[i] = atoi(line);
   }
 
-  // INITIALIZING TWO WAY PIPES OF FOR PN PROCESSES
-  int fd[2 * (PN)];  // Pipe for a Child to Write to a Parent and for a Parent
-                     // to Read from a child
-  int bd[2 * (PN)];  // Pipe for a Parent to Write to a Child and for a Child to
-                     // Read from a Parent
-
+  /
+  int fd[2 * (PN)];  
+  int bd[2 * (PN)];  
   int pid;
   int start = 0;
   int end = 0;
 
-  int parentRoot = getpid();  // Tracks the FIRST PROCESS OF THE CHAIN
+  int parentRoot = getpid();  
   int returnArg = 1;
 
-  // START THE DFS CHAIN! NODE -> CHILD -> CHILD OF CHILD -> CHILD OF CHILD OF
-  // CHILD ETC.
+  
+
   for (int i = 0; i < PN; i++) {
-    // Initiate the Pipes.
+    // Initiate pipes
     pipe(&fd[2 * i]);
     pipe(&bd[2 * i]);
 
@@ -94,7 +90,7 @@ int main(int argc, char* argv[]) {
       perror("fork");
     }
 
-    // CHILD PROCESS
+    // child process
     else if (pid == 0) {
       output = fopen("output.txt", "a+");
       printf("Hi I'm process %d with return arg %d and my parent is %d.\n",
@@ -108,24 +104,14 @@ int main(int argc, char* argv[]) {
       end = end + (L + 60) / PN;
       if (end > (L + 60)) end = (L + 60);
 
-      // IF IT IS THE LAST PROCESS IN THE CHAIN
+      
       if (i == (PN - 1)) {
-        // CHAIN LOOKS LIKE
-
-        //           ----   PIPE TO WRITE TO PARENT --------
-        //         |                                       |
-        //  ---PREVIOUS PROCESS -------------------------CURRENT PROCESS
-        //         |                                       |
-        //           ----  PIPE TO READ FROM PARENT --------
-        // FOR VISUALIZATION
-
         close(fd[2 * i]);
         close(bd[2 * i] + 1);
         int max = 0;
         double avg = 0;
         int count = 0;
         for (int j = start; j < end; j++) {
-          // exclude negative numbers that were read in
           if (array[j] < 0) continue;
 
           if (array[j] > max) max = array[j];
@@ -160,8 +146,8 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    else {  // parent process (NO FORKING IN HERE TO KEEP CHAIN FORMAT!) Some
-            // ends need to be closed.
+    else {  
+      // parent process
       int tempMax;
       double tempAvg;
       int tempCount;
@@ -169,7 +155,7 @@ int main(int argc, char* argv[]) {
       double avg = 0;
       int count = 0;
 
-      // IF NOT THE START OF THE CHAIN
+    
       if (parentRoot != getpid()) {
         close(fd[2 * i] + 1);
         close(fd[2 * (i - 1)]);
@@ -178,7 +164,7 @@ int main(int argc, char* argv[]) {
 
         count = 0;
         for (int j = start; j < end; j++) {
-          // exclude negative numbers that were read in
+        
           if (array[j] < 0) continue;
 
           if (array[j] > max) max = array[j];
@@ -227,15 +213,9 @@ int main(int argc, char* argv[]) {
 
       }
 
-      // THE START OF THE CHAIN
+      
       else {
-        // CHAIN LOOKS LIKE
-        //           ----   PIPE TO WRITE TO CHILD --------
-        //           |                                       |
-        //  CURRENT PROCESS---------------------------------NEXT PROCESS
-        //           |                                       |
-        //           ----   PIPE TO READ FROM CHILD --------
-        // FOR VISUALIZATION
+        
         close(bd[2 * i]);
         close(fd[2 * i + 1]);
         read(fd[2 * i], &max, sizeof(int));
