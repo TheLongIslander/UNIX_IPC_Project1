@@ -15,13 +15,13 @@ void generateTextFile() {
     int* loc = malloc((L + 60) * sizeof(int)); // Allocate memory for an array of integers
     for (int i = 0; i < L + 60; i++) loc[i] = 0; // Initialize array elements to 0
 
-    int count = 0; // Counter for negative values
+    int c = 0; // Counter for negative values
     srand(time(NULL)); // Seed the random number generator
-    while (count < 60) { // Loop to insert 60 random negative values
-        int randomNumber = rand() % (L + 60);
-        if (loc[randomNumber] == 0) {
-            loc[randomNumber] = -(rand() % 60 + 1);
-            count++;
+    while (c < 60) { // Loop to insert 60 random negative values
+        int RN = rand() % (L + 60);
+        if (loc[RN] == 0) {
+            loc[RN] = -(rand() % 60 + 1);
+            c++;
         }
     }
 
@@ -39,8 +39,8 @@ void generateTextFile() {
 }
 
 int main(int argc, char* argv[]) {
-    double time_spent = 0.0;
-    clock_t begin = clock(); // Start timing the execution
+    double time_elapsed = 0.0;
+    clock_t startTiming = clock(); // Start timing the execution
 
     // Check for correct number of arguments
     if (argc != 4) {
@@ -77,8 +77,8 @@ int main(int argc, char* argv[]) {
     int start = 0; // Start index for processing
     int end = 0; // End index for processing
 
-    int parentRoot = getpid(); // Get parent process ID
-    int returnArg = 1; // Return argument initialization
+    int pRoot = getpid(); // Get parent process ID
+    int returnArguement = 1; // Return argument initialization
 
     // Loop to create child processes and perform operations
     for (int i = 0; i < PN; i++) {
@@ -96,12 +96,12 @@ int main(int argc, char* argv[]) {
         else if (pid == 0) {
             output = fopen("output.txt", "a+"); // Open output file for appending
             printf("Hi I'm process %d with return arg %d and my parent is %d.\n",
-                   getpid(), returnArg + 1, getppid());
+                   getpid(), returnArguement + 1, getppid());
             fprintf(output,
                     "Hi I'm process %d with return arg %d and my parent is %d.\n",
-                    getpid(), returnArg + 1, getppid());
+                    getpid(), returnArguement + 1, getppid());
             fclose(output); // Close the output file
-            returnArg++; // Increment return argument
+            returnArguement++; // Increment return argument
             start = end; // Set start for this process's chunk
             end = end + (L + 60) / PN; // Calculate end of chunk
             if (end > (L + 60)) end = (L + 60);
@@ -111,20 +111,20 @@ int main(int argc, char* argv[]) {
                 close(fd[2 * i]); // Close unused write end of forward pipe
                 close(bd[2 * i] + 1); // Close unused read end of backward pipe
                 int max = 0;
-                double avg = 0;
-                int count = 0;
+                double average = 0;
+                int c = 0;
                 // Process data and calculate max, average
                 for (int j = start; j < end; j++) {
                     if (array[j] < 0) continue; // Skip negative values
 
                     if (array[j] > max) max = array[j]; // Find maximum
-                    avg += array[j]; // Sum for average
-                    count++; // Increment count
+                    average += array[j]; // Sum for average
+                    c++; // Increment count
                 }
-                avg = avg / (double)(count); // Calculate average
+                average = average / (double)(c); // Calculate average
                 write(fd[2 * i + 1], &max, sizeof(int)); // Write max to pipe
-                write(fd[2 * i + 1], &avg, sizeof(double)); // Write average to pipe
-                write(fd[2 * i + 1], &count, sizeof(int)); // Write count to pipe
+                write(fd[2 * i + 1], &average, sizeof(double)); // Write average to pipe
+                write(fd[2 * i + 1], &c, sizeof(int)); // Write count to pipe
                 close(fd[2 * i + 1]); // Close write end of forward pipe
 
                 read(bd[2 * i], &H, sizeof(int)); // Read from backward pipe
@@ -137,11 +137,11 @@ int main(int argc, char* argv[]) {
                         printf(
                             "Hi I am Process %d with return argument %d and I found the "
                             "hidden key at position A[%d].\n",
-                            getpid(), returnArg, i);
+                            getpid(), returnArguement, i);
                         fprintf(output,
                                 "Hi I am Process %d with return argument %d and I found "
                                 "the hidden key at position A[%d].\n",
-                                getpid(), returnArg, i);
+                                getpid(), returnArguement, i);
                         H--;
                     }
                 }
@@ -152,43 +152,43 @@ int main(int argc, char* argv[]) {
 
         else { // parent process
             int tempMax;
-            double tempAvg;
-            int tempCount;
+            double tempaverage;
+            int tempc;
             int max = 0;
-            double avg = 0;
-            int count = 0;
+            double average = 0;
+            int c = 0;
 
             // If not root parent, process and pass data through pipes
-            if (parentRoot != getpid()) {
+            if (pRoot != getpid()) {
                 close(fd[2 * i] + 1); // Close write end of current forward pipe
                 close(fd[2 * (i - 1)]); // Close read end of previous forward pipe
                 close(bd[2 * i]); // Close read end of current backward pipe
                 close(bd[2 * (i - 1) + 1]); // Close write end of previous backward pipe
 
-                count = 0; // Reset count
+                c = 0; // Reset count
                 // Process chunk and calculate max, average
                 for (int j = start; j < end; j++) {
                     if (array[j] < 0) continue; // Skip negative values
 
                     if (array[j] > max) max = array[j]; // Find maximum
-                    avg += array[j]; // Sum for average
-                    count++; // Increment count
+                    average += array[j]; // Sum for average
+                    c++; // Increment count
                 }
-                avg = avg / (double)(count); // Calculate average
+                average = average / (double)(c); // Calculate average
 
                 read(fd[2 * i], &tempMax, sizeof(int)); // Read max from previous child
-                read(fd[2 * i], &tempAvg, sizeof(double)); // Read average from previous child
-                read(fd[2 * i], &tempCount, sizeof(int)); // Read count from previous child
+                read(fd[2 * i], &tempaverage, sizeof(double)); // Read average from previous child
+                read(fd[2 * i], &tempc, sizeof(int)); // Read count from previous child
                 close(fd[2 * i]); // Close read end of forward pipe
 
                 if (tempMax >= max) {
                     max = tempMax; // Set new max if greater
                 }
-                avg = (avg * count + tempAvg * tempCount) / (double)(tempCount + count); // Calculate new average
+                average = (average * c + tempaverage * tempc) / (double)(tempc + c); // Calculate new average
 
                 write(fd[2 * (i - 1) + 1], &max, sizeof(int)); // Write max to previous forward pipe
-                write(fd[2 * (i - 1) + 1], &avg, sizeof(double)); // Write average to previous forward pipe
-                write(fd[2 * (i - 1) + 1], &count, sizeof(int)); // Write count to previous forward pipe
+                write(fd[2 * (i - 1) + 1], &average, sizeof(double)); // Write average to previous forward pipe
+                write(fd[2 * (i - 1) + 1], &c, sizeof(int)); // Write count to previous forward pipe
                 close(fd[2 * (i - 1) + 1]); // Close write end of previous forward pipe
 
                 read(bd[2 * (i - 1)], &H, sizeof(int)); // Read H from previous backward pipe
@@ -201,11 +201,11 @@ int main(int argc, char* argv[]) {
                         printf(
                             "Hi I am Process %d with return argument %d and I found the "
                             "hidden key at position A[%d].\n",
-                            getpid(), returnArg, i);
+                            getpid(), returnArguement, i);
                         fprintf(output,
                                 "Hi I am Process %d with return argument %d and I found "
                                 "the hidden key at position A[%d].\n",
-                                getpid(), returnArg, i);
+                                getpid(), returnArguement, i);
                         H--;
                     }
                 }
@@ -221,23 +221,23 @@ int main(int argc, char* argv[]) {
                 close(bd[2 * i]); // Close read end of current backward pipe
                 close(fd[2 * i + 1]); // Close write end of current forward pipe
                 read(fd[2 * i], &max, sizeof(int)); // Read max from last child
-                read(fd[2 * i], &avg, sizeof(double)); // Read average from last child
-                read(fd[2 * i], &count, sizeof(int)); // Read count from last child
+                read(fd[2 * i], &average, sizeof(double)); // Read average from last child
+                read(fd[2 * i], &c, sizeof(int)); // Read count from last child
                 close(fd[2 * i]); // Close read end of current forward pipe
 
                 output = fopen("output.txt", "a+"); // Open output file for appending
-                fprintf(output, "Max: %d, Avg: %f\n\n", max, avg); // Write final max and average to file
+                fprintf(output, "Max: %d, Avg: %f\n\n", max, average); // Write final max and average to file
                 fclose(output); // Close the output file
 
-                printf("Max: %d, Avg: %f\n\n", max, avg); // Print final max and average
+                printf("Max: %d, Avg: %f\n\n", max, average); // Print final max and average
                 write(bd[2 * i + 1], &H, sizeof(int)); // Write H to first backward pipe
                 close(bd[2 * i] + 1); // Close write end of current backward pipe
 
                 wait(NULL); // Wait for child process to terminate
 
                 clock_t end = clock(); // End timing the execution
-                time_spent += (double)(end - begin) / CLOCKS_PER_SEC; // Calculate total time spent
-                printf("\nThe program completed in %f seconds\n", (time_spent)); // Print total time spent
+                time_elapsed += (double)(end - startTiming) / CLOCKS_PER_SEC; // Calculate total time spent
+                printf("\nThe program completed in %f seconds\n", (time_elapsed)); // Print total time spent
                 exit(0); // Exit program
             }
         }
