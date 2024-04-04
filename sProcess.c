@@ -17,16 +17,16 @@ void generateTextFile() {
         loc[i] = 0; // Initialize array elements to 0
     }
 
-    int count = 0; // Counter for hidden keys
+    int c = 0; // Counter for hidden keys
     srand(time(NULL)); // Seed the random number generator
-    int randomNumber;
+    int RN;
 
     // Loop to generate unique hidden keys
-    while (count < 60) {
-        randomNumber = rand() % (L + 60); // Generate a random index
-        if (loc[randomNumber] == 0) { // Ensure the index is not already used for a hidden key
-            loc[randomNumber] = -(rand() % 60 + 1); // Assign a negative number as a hidden key
-            count++; // Increment the hidden key counter
+    while (c < 60) {
+        RN = rand() % (L + 60); // Generate a random index
+        if (loc[RN] == 0) { // Ensure the index is not already used for a hidden key
+            loc[RN] = -(rand() % 60 + 1); // Assign a negative number as a hidden key
+            c++; // Increment the hidden key counter
         }
     }
 
@@ -35,11 +35,11 @@ void generateTextFile() {
 
     // Write hidden keys and random positive numbers to the file
     for (int i = 0; i < (L + 60); i++) {
-        randomNumber = rand() % 10000; // Generate a random positive number
+        RN = rand() % 10000; // Generate a random positive number
         if (loc[i] < 0) {
             fprintf(keys, "%d\n", loc[i]); // Write a hidden key
         } else {
-            fprintf(keys, "%d\n", randomNumber); // Write a random positive number
+            fprintf(keys, "%d\n", RN); // Write a random positive number
         }
     }
 
@@ -65,10 +65,10 @@ int main(int argc, char* argv[]) {
 
     generateTextFile(); // Call the function to generate the file with random numbers and hidden keys
 
-    int64_t avg = 0; // Variable to calculate average
-    int64_t validNumbers = 0; // Counter for valid (non-hidden-key) numbers
+    int64_t average = 0; // Variable to calculate average
+    int64_t validNums = 0; // Counter for valid (non-hidden-key) numbers
 
-    int keyCount = 0; // Counter for found hidden keys
+    int keyCounter = 0; // Counter for found hidden keys
     int max = 0; // Variable to track the maximum number
 
     FILE* file = fopen("keys.txt", "r"); // Open the file for reading
@@ -93,16 +93,16 @@ int main(int argc, char* argv[]) {
     }
 
     // Read from the file and process each number
-    while (fgets(line, 256, file) && keyCount < H) {
+    while (fgets(line, 256, file) && keyCounter < H) {
         int num = atoi(line); // Convert line to integer
         if (num > max) max = num; // Check and update maximum number
         if (num >= 0) {
-            avg += num; // Add to average calculation
-            validNumbers++; // Increment counter of valid numbers
+            average += num; // Add to average calculation
+            validNums++; // Increment counter of valid numbers
         } else if (num < 0) { // Check if number is a hidden key
-            keyCount++; // Increment hidden key counter
-            fprintf(output, "Hi I am process %d with return arg 1. I found the hidden key in position A[%lld].\n", getpid(), validNumbers);
-            printf("Found hidden key at index %lld\n", validNumbers);
+            keyCounter++; // Increment hidden key counter
+            fprintf(output, "Hi I am process %d with return arg 1. I found the hidden key in position A[%lld].\n", getpid(), validNums);
+            printf("Found hidden key at index %lld\n", validNums);
         }
     }
 
@@ -110,11 +110,11 @@ int main(int argc, char* argv[]) {
     fclose(file); // Close the file
 
     // Calculate and print the average if there are valid numbers
-    if (validNumbers > 0) {
-        avg /= validNumbers; // Calculate average
+    if (validNums > 0) {
+        average /= validNums; // Calculate average
     }
 
-    printf("Max: %d\nAverage: %lld\n", max, avg); // Print maximum and average
-    fprintf(output, "Max: %d\nAverage: %lld\n", max, avg); // Write maximum and average to output file
+    printf("Max: %d\nAverage: %lld\n", max, average); // Print maximum and average
+    fprintf(output, "Max: %d\nAverage: %lld\n", max, average); // Write maximum and average to output file
     fclose(output); // Close the output file
 }
